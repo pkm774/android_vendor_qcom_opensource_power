@@ -58,7 +58,6 @@ static int display_hint_sent;
 static int video_encode_hint_sent;
 static int cam_preview_hint_sent;
 
-pthread_mutex_t camera_hint_mutex = PTHREAD_MUTEX_INITIALIZER;
 static int camera_hint_ref_count;
 static void process_video_encode_hint(void *metadata);
 //static void process_cam_preview_hint(void *metadata);
@@ -317,7 +316,6 @@ static void process_video_encode_hint(void *metadata)
                 memcpy(resource_values, res, MIN_VAL(sizeof(resource_values), sizeof(res)));
                 num_resources = sizeof(res)/sizeof(res[0]);
             }
-            pthread_mutex_lock(&camera_hint_mutex);
             camera_hint_ref_count++;
             if (camera_hint_ref_count == 1) {
                 if (!video_encode_hint_sent) {
@@ -326,17 +324,14 @@ static void process_video_encode_hint(void *metadata)
                     video_encode_hint_sent = 1;
                 }
            }
-           pthread_mutex_unlock(&camera_hint_mutex);
         }
     } else if (video_encode_metadata.state == 0) {
         if (is_interactive_governor(governor)) {
-            pthread_mutex_lock(&camera_hint_mutex);
             camera_hint_ref_count--;
             if (!camera_hint_ref_count) {
                 undo_hint_action(video_encode_metadata.hint_id);
                 video_encode_hint_sent = 0;
             }
-            pthread_mutex_unlock(&camera_hint_mutex);
             return ;
         }
     }
