@@ -127,8 +127,7 @@ int  set_interactive_override(struct power_module *module, int on)
 
     if (!on) {
         /* Display off. */
-             if ((strncmp(governor, INTERACTIVE_GOVERNOR, strlen(INTERACTIVE_GOVERNOR)) == 0) &&
-                (strlen(governor) == strlen(INTERACTIVE_GOVERNOR))) {
+             if (is_interactive_governor(governor)) {
              /*
                  1. CPUfreq params
                         - hispeed freq for big - 1113Mhz
@@ -173,8 +172,7 @@ int  set_interactive_override(struct power_module *module, int on)
 
     } else {
         /* Display on. */
-          if ((strncmp(governor, INTERACTIVE_GOVERNOR, strlen(INTERACTIVE_GOVERNOR)) == 0) &&
-                (strlen(governor) == strlen(INTERACTIVE_GOVERNOR))) {
+          if (is_interactive_governor(governor)) {
 
              undo_hint_action(DISPLAY_STATE_HINT_ID);
              display_hint_sent = 0;
@@ -226,9 +224,7 @@ static void process_video_encode_hint(void *metadata)
     }
 
     if (video_encode_metadata.state == 1) {
-        if ((strncmp(governor, INTERACTIVE_GOVERNOR,
-            strlen(INTERACTIVE_GOVERNOR)) == 0) &&
-            (strlen(governor) == strlen(INTERACTIVE_GOVERNOR))) {
+        if (is_interactive_governor(governor)) {
              /*
                  1. CPUfreq params
                         - hispeed freq for big - 1113Mhz
@@ -278,9 +274,7 @@ static void process_video_encode_hint(void *metadata)
            pthread_mutex_unlock(&camera_hint_mutex);
         }
     } else if (video_encode_metadata.state == 0) {
-        if ((strncmp(governor, INTERACTIVE_GOVERNOR,
-            strlen(INTERACTIVE_GOVERNOR)) == 0) &&
-            (strlen(governor) == strlen(INTERACTIVE_GOVERNOR))) {
+        if (is_interactive_governor(governor)) {
             pthread_mutex_lock(&camera_hint_mutex);
             camera_hint_ref_count--;
             if (!camera_hint_ref_count) {
