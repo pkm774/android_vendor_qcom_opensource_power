@@ -81,7 +81,7 @@ void power_hint(power_hint_t hint, void *data)
         break;
         case POWER_HINT_VR_MODE:
             ALOGI("VR mode power hint not handled in power_hint_override");
-            break;
+        break;
         case POWER_HINT_INTERACTION:
         {
             int resources[] = {0x702, 0x20F, 0x30F};
@@ -108,6 +108,8 @@ void power_hint(power_hint_t hint, void *data)
                     }
                 else
                     ALOGE("Lock for hint: %X was not acquired, cannot be released", hint);
+        break;
+        default:
         break;
     }
 }
